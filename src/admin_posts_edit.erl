@@ -8,7 +8,7 @@ main() ->
     true ->
       case string:to_integer(wf:path_info()) of
         {error, _} ->
-         wf:redirect("/admin/posts");
+          wf:redirect("/admin/posts");
         {PostID, _} ->
           Post = dets:lookup(luminik_posts, PostID),
           if

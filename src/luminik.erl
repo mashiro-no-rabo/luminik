@@ -13,7 +13,7 @@ public_header() ->
 
 admin_header() ->
   [
-    #h1 { style="margin-bottom: 0; text-align: middle;", text=lb_template:blog_title() ++" - Admin Panel" }
+    #h1 { style="margin-bottom: 0; text-align: middle;", text=luminik:blog_title() ++" - Admin Panel" }
   ].
 
 footer() ->
