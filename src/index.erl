@@ -13,7 +13,7 @@ body() ->
   ].
 
 get_newest_post() ->
-  case dets:lookup(lb_settings, newest_post) of
+  case dets:lookup(luminik_settings, newest_post) of
     [] -> no_post();
     [{newest_post, -1}] -> no_post();
     [{newest_post, PostID}] -> make_posts_list(PostID, 13)
@@ -26,12 +26,12 @@ no_post() ->
 
 make_posts_list(_PostID, 0) -> [];
 make_posts_list(PostID, N) ->
-  case dets:lookup(lb_posts, PostID) of
+  case dets:lookup(luminik_posts, PostID) of
     [{-1, no_more}] -> [];
     [{PostID, PostTitle, PostRawContent, _NewerID, OlderID}] ->
-      [{PostID, PostPubTime, _PostEditTime, PostCategoryID, PostTagsIDList}] = dets:lookup(lb_postmeta, PostID),
+      [{PostID, PostPubTime, _PostEditTime, PostCategoryID, PostTagsIDList}] = dets:lookup(luminik_postmeta, PostID),
       {ok, PostContent, _} = regexp:gsub(PostRawContent, "\n", "<br />"),
-      [{PostCategoryID, PostCategory}] = dets:lookup(lb_categories, PostCategoryID),
+      [{PostCategoryID, PostCategory}] = dets:lookup(luminik_categories, PostCategoryID),
       [
         #panel { style="border-left: solid #66ffcc 4px; padding-left: 10px;", body=[
           "<h2>",

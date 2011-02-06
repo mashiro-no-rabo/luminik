@@ -8,7 +8,7 @@ main() ->
     {error, _} ->
       wf:redirect("/");
     {PostID, _} ->
-      Post = dets:lookup(lb_posts, PostID),
+      Post = dets:lookup(luminik_posts, PostID),
       if
         Post == [] -> wf:redirect("/");
         Post == [{-1, no_more}] -> wf:redirect("/");
@@ -18,15 +18,15 @@ main() ->
 
 title() ->
   {PostID, _} = string:to_integer(wf:path_info()),
-  [{PostID, PostTitle, _PostContent, _NewerID, _OlderID}] = dets:lookup(lb_posts, PostID),
+  [{PostID, PostTitle, _PostContent, _NewerID, _OlderID}] = dets:lookup(luminik_posts, PostID),
   PostTitle.
 
 body() ->
   {PostID, _} = string:to_integer(wf:path_info()),
-  [{PostID, PostTitle, PostRawContent, NewerID, OlderID}] = dets:lookup(lb_posts, PostID),
-  [{PostID, PostPubTime, PostEditTime, PostCategoryID, PostTagsIDList}] = dets:lookup(lb_postmeta, PostID),
+  [{PostID, PostTitle, PostRawContent, NewerID, OlderID}] = dets:lookup(luminik_posts, PostID),
+  [{PostID, PostPubTime, PostEditTime, PostCategoryID, PostTagsIDList}] = dets:lookup(luminik_postmeta, PostID),
   {ok, PostContent, _} = regexp:gsub(PostRawContent, "\n", "<br />"),
-  [{PostCategoryID, PostCategory}] = dets:lookup(lb_categories, PostCategoryID),
+  [{PostCategoryID, PostCategory}] = dets:lookup(luminik_categories, PostCategoryID),
   [
     #panel { style="margin: 40px 20px; border-left: solid #66ffcc 4px; padding-left: 10px;", body=[
       #h2 { style="margin-top: 0; float: left;", text=PostTitle },

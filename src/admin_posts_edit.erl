@@ -10,7 +10,7 @@ main() ->
         {error, _} ->
          wf:redirect("/admin/posts");
         {PostID, _} ->
-          Post = dets:lookup(lb_posts, PostID),
+          Post = dets:lookup(luminik_posts, PostID),
           if
             Post == [] -> wf:redirect("/admin/posts");
             Post == [{-1, no_more}] -> wf:redirect("/admin/posts");
@@ -31,8 +31,8 @@ body() ->
     #is_required { text="Required." }
   ]}),
   {PostID, _} = string:to_integer(wf:path_info()),
-  [{PostID, PostTitle, PostRawContent, _NewerID, _OlderID}] = dets:lookup(lb_posts, PostID),
-  [{PostID, _PostPubTime, _PostEditTime, PostCategoryID, PostTagsIDList}] = dets:lookup(lb_postmeta, PostID),
+  [{PostID, PostTitle, PostRawContent, _NewerID, _OlderID}] = dets:lookup(luminik_posts, PostID),
+  [{PostID, _PostPubTime, _PostEditTime, PostCategoryID, PostTagsIDList}] = dets:lookup(luminik_postmeta, PostID),
   #panel { style="margin: 50px;", body=[
     #flash {},
     #textbox { id=post_title, html_encode=true, style="width: 500px; height: 30px; margin: 2px 20px; font-size: 25px;", text=PostTitle, next=post_content },
@@ -44,14 +44,14 @@ body() ->
 
 event(update_post) ->
   {PostID, _} = string:to_integer(wf:path_info()),
-  [{PostID, _PostTitle, _PostRawContent, NewerID, OlderID}] = dets:lookup(lb_posts, PostID),
-  [{PostID, PostPubTime, _PostEditTime, _PostCategoryID, _PostTagsIDList}] = dets:lookup(lb_postmeta, PostID),
-  dets:insert(lb_posts, {PostID, wf:q(post_title), wf:q(post_content), NewerID, OlderID}),
+  [{PostID, _PostTitle, _PostRawContent, NewerID, OlderID}] = dets:lookup(luminik_posts, PostID),
+  [{PostID, PostPubTime, _PostEditTime, _PostCategoryID, _PostTagsIDList}] = dets:lookup(luminik_postmeta, PostID),
+  dets:insert(luminik_posts, {PostID, wf:q(post_title), wf:q(post_content), NewerID, OlderID}),
   {{Year, Mouth, Day}, {Hour, Minute, Second}} = calendar:local_time(),
   PostEditTime = io_lib:format("~4..0w.~2..0w.~2..0w, ~2..0w:~2..0w:~2..0w", [Year, Mouth, Day, Hour, Minute, Second]),
   {PostCategoryID, _} = string:to_integer(wf:q(post_category)),
   PostTagsIDList = [],
-  dets:insert(lb_postmeta, {PostID, PostPubTime, PostEditTime, PostCategoryID, PostTagsIDList}),
+  dets:insert(luminik_postmeta, {PostID, PostPubTime, PostEditTime, PostCategoryID, PostTagsIDList}),
   wf:flash([
     "Post has been updated, ",
     #link { text="click here to view", url="/post/" ++ luminik:to_string(PostID) }

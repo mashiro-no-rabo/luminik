@@ -30,24 +30,24 @@ body() ->
   ]}.
 
 event(submit_post) ->
-  case dets:lookup(lb_settings, newest_post) of
+  case dets:lookup(luminik_settings, newest_post) of
     [] ->
-      dets:insert(lb_settings, {newest_post, 4}),
+      dets:insert(luminik_settings, {newest_post, 4}),
       NewPostID = 4,
       OldPostID = -1;
     [{newest_post, OldPostID}] ->
       NewPostID = OldPostID + 4
   end,
   % a random NewerPostID ?
-  dets:insert(lb_posts, {NewPostID, wf:q(post_title), wf:q(post_content), NewPostID+4, OldPostID}),
+  dets:insert(luminik_posts, {NewPostID, wf:q(post_title), wf:q(post_content), NewPostID+4, OldPostID}),
   {{Year, Mouth, Day}, {Hour, Minute, Second}} = calendar:local_time(),
   PostPubTime = io_lib:format("~4..0w.~2..0w.~2..0w, ~2..0w:~2..0w:~2..0w", [Year, Mouth, Day, Hour, Minute, Second]),
   PostEditTime = PostPubTime,
   {PostCategoryID, _} = string:to_integer(wf:q(post_category)),
   PostTagsIDList = [],
-  dets:insert(lb_postmeta, {NewPostID, PostPubTime, PostEditTime, PostCategoryID, PostTagsIDList}),
-  dets:insert(lb_comments, {NewPostID, []}),
-  dets:insert(lb_settings, {newest_post, NewPostID}),
+  dets:insert(luminik_postmeta, {NewPostID, PostPubTime, PostEditTime, PostCategoryID, PostTagsIDList}),
+  dets:insert(luminik_comments, {NewPostID, []}),
+  dets:insert(luminik_settings, {newest_post, NewPostID}),
   wf:flash([
     "Post has been published, ",
     #link { text="click here to view", url="/"}

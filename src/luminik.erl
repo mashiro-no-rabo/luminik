@@ -27,32 +27,32 @@ footer() ->
   ].
 
 blog_title() ->
-  case dets:lookup(lb_settings, blog_title) of
+  case dets:lookup(luminik_settings, blog_title) of
     [{blog_title, BlogTitle}] -> BlogTitle;
     [] -> "Just another luminik Blog"
   end.
 blog_title(BlogTitle) ->
-  dets:insert(lb_settings, {blog_title, BlogTitle}).
+  dets:insert(luminik_settings, {blog_title, BlogTitle}).
 
 admin_username() ->
-  dets:lookup(lb_settings, admin_username).
+  dets:lookup(luminik_settings, admin_username).
 admin_username(AdminUsername) ->
-  dets:insert(lb_settings, {admin_username, AdminUsername}).
+  dets:insert(luminik_settings, {admin_username, AdminUsername}).
 admin_username_str() ->
-  [{admin_username, AdminUsername}] = dets:lookup(lb_settings, admin_username),
+  [{admin_username, AdminUsername}] = dets:lookup(luminik_settings, admin_username),
   AdminUsername.
 
 admin_password() ->
-  dets:lookup(lb_settings, admin_password).
+  dets:lookup(luminik_settings, admin_password).
 admin_password(AdminPassword) ->
-  dets:insert(lb_settings, {admin_password, AdminPassword}).
+  dets:insert(luminik_settings, {admin_password, AdminPassword}).
 
 to_string(Int) -> to_string2(Int div 10) ++ [48+(Int rem 10)].
 to_string2(0) -> [];
 to_string2(Int) -> to_string2(Int div 10) ++ [48+(Int rem 10)].
 
 get_categories() ->
-  AllCategories = dets:match_object(lb_categories, {'_', '_'}),
+  AllCategories = dets:match_object(luminik_categories, {'_', '_'}),
   make_category_options(AllCategories).
 make_category_options([]) -> [];
 make_category_options([{CategoryID, Category}|Rest]) ->

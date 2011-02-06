@@ -21,6 +21,6 @@ body() ->
   ].
 
 event(add_category) ->
-  NewCatID = lists:max(dets:select(lb_categories, [{{'$0', '_'}, [], ['$0']}])) + 1,
-  dets:insert(lb_categories, {NewCatID, wf:q(category_name)}),
+  NewCatID = lists:max(dets:select(luminik_categories, [{{'$0', '_'}, [], ['$0']}])) + 1,
+  dets:insert(luminik_categories, {NewCatID, wf:q(category_name)}),
   wf:redirect("/admin").
