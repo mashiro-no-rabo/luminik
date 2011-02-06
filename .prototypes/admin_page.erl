@@ -1,4 +1,4 @@
--module (admin_posts).
+-module (admin_[[[NAME]]]).
 -compile(export_all).
 -include_lib("nitrogen/include/wf.hrl").
 -include("records.hrl").
@@ -11,9 +11,9 @@ main() ->
       wf:redirect_to_login("/login")
   end.
 
-title() -> "Posts Management".
+title() -> "".
 
 body() ->
   [
-    
+  
   ].

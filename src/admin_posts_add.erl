@@ -3,7 +3,13 @@
 -include_lib("nitrogen/include/wf.hrl").
 -include("records.hrl").
 
-main() -> #template { file="./site/templates/bare.html" }.
+main() ->
+  case wf:role(admin) of
+    true ->
+      #template { file="./site/templates/lb_admin.html" };
+    false ->
+      wf:redirect_to_login("/login")
+  end.
 
 title() -> "Add Post".
 
@@ -16,10 +22,10 @@ body() ->
   ]}),
   #panel { style="margin: 50px;", body=[
     #flash {},
-    #textbox { id=post_title, style="width: 500px; height: 30px; margin-right: 20px; font-size: 25px;", text="Title here", next=post_content },
+    #textbox { id=post_title, html_encode=true, style="width: 500px; height: 30px; margin: 2px 20px; font-size: 25px;", text="Title here", next=post_content },
     #button { id=submit_post, text="Publish", postback=submit_post },
     #hr {},
-    #textarea { id=post_content, style="height: 240px; width: 500px; margin-right: 20px; float:left; font-size: 14px;" },
+    #textarea { id=post_content, style="height: 240px; width: 500px; margin: 20px; float:left; font-size: 14px;" },
     #dropdown { id=post_category, style="float: left;", value="-1", options=get_categories() }
   ]}.
 

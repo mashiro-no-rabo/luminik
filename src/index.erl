@@ -5,24 +5,11 @@
 
 main() -> #template { file="./site/templates/lb_basic.html" }.
 
-title() -> "L.Blog Development".
-
-header() ->
-  [
-    #h1 { style="margin-bottom: 0;", text="The Blog of L.Blog" }
-  ].
+title() -> "Home".
 
 body() ->
   [
     #panel { id=post_list, style="margin: 40px 20px;", body=get_newest_post() }
-  ].
-
-footer() ->
-  [
-    #p { style="text-align: right; margin-right: 20px; font-size: 15px;", body=[
-      #link { text="New Post", url="/admin/posts/add" },
-      " :: Copyright by AquarHEAD."
-    ] }
   ].
 
 get_newest_post() ->
@@ -45,8 +32,10 @@ make_posts_list(PostID, N) ->
       [{PostID, PostTime, Category, TagsList}] = dets:lookup(lb_postmeta, PostID),
       [
         #panel { style="border-left: solid #66ffcc 4px; padding-left: 10px;", body=[
-          #h2 { style="margin-top: 0; float: left;", text=PostTitle },
-          #span { style="color: gray; font-size: 12px; float: right; font-family: Menlo, Helvetica, Arial, sans-serif;", text=PostTime ++ " :: " ++ Category },
+          "<h2>",
+          #link { style="margin-top: 0; float: left; color: #000;", text=PostTitle, url="/post/" ++ to_string(PostID) },
+          "</h2>",
+          #span { style="color: gray; font-size: 12px; float: right; font-family: Menlo, Helvetica, Arial, sans-serif;", text=Category ++ " :: " ++ PostTime },
           #p { style="clear: both", body=PostContent }
         ]}
       ] ++ make_posts_list(OlderID, N-1);
@@ -54,4 +43,6 @@ make_posts_list(PostID, N) ->
       %database_error
       []
   end.
-  
+
+to_string(0) -> [];
+to_string(Int) -> to_string(Int div 10) ++ [48+(Int rem 10)].
