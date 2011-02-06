@@ -19,7 +19,7 @@ body() ->
     #textbox { id=blog_title, text=lb_template:blog_title() },
     #hr {},
     "Admin Username: ",
-    #textbox { id=admin_username, text=lb_general:admin_username_str(), next=admin_password },
+    #textbox { id=admin_username, text=luminik:admin_username_str(), next=admin_password },
     #br {},
     "Admin Password: ",
     #password { id=admin_password },
@@ -28,10 +28,10 @@ body() ->
   ].
 
 event(update_settings) ->
-  lb_general:blog_title(wf:q(blog_title)),
-  lb_general:admin_username(wf:q(admin_username)),
+  luminik:blog_title(wf:q(blog_title)),
+  luminik:admin_username(wf:q(admin_username)),
   case wf:q(admin_password) of
     undefined -> ok;
-    AdminPassword -> lb_general:admin_password(AdminPassword)
+    AdminPassword -> luminik:admin_password(AdminPassword)
   end,
   wf:redirect("/admin").

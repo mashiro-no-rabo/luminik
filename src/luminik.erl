@@ -1,4 +1,4 @@
--module (lb_general).
+-module (luminik).
 -compile(export_all).
 -include_lib("nitrogen/include/wf.hrl").
 -include("records.hrl").
@@ -46,3 +46,14 @@ admin_password() ->
   dets:lookup(lb_settings, admin_password).
 admin_password(AdminPassword) ->
   dets:insert(lb_settings, {admin_password, AdminPassword}).
+
+to_string(Int) -> to_string2(Int div 10) ++ [48+(Int rem 10)].
+to_string2(0) -> [];
+to_string2(Int) -> to_string2(Int div 10) ++ [48+(Int rem 10)].
+
+get_categories() ->
+  AllCategories = dets:match_object(lb_categories, {'_', '_'}),
+  make_category_options(AllCategories).
+make_category_options([]) -> [];
+make_category_options([{CategoryID, Category}|Rest]) ->
+  [ #option { text=Category, value=io_lib:format("~p", [CategoryID]) } | make_category_options(Rest) ].

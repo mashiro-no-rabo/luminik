@@ -13,11 +13,11 @@ body() ->
     #custom {
       text="Wrong username",
       function=fun(_, Value) ->
-        case lb_general:admin_username() of
+        case luminik:admin_username() of
           [{admin_username, AdminUsername}] ->
             Value == AdminUsername;
           [] ->
-            lb_general:admin_username(Value),
+            luminik:admin_username(Value),
             true
         end
       end
@@ -28,11 +28,11 @@ body() ->
     #custom {
       text="Wrong password.",
       function=fun(_, Value) ->
-        case lb_general:admin_password() of
+        case luminik:admin_password() of
           [{admin_password, AdminPassword}] ->
             Value == AdminPassword;
           [] ->
-            lb_general:admin_password(Value),
+            luminik:admin_password(Value),
             true
         end
       end

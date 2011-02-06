@@ -11,12 +11,12 @@ main() ->
       wf:redirect_to_login("/login")
   end.
 
-title() -> "General Settings".
+title() -> "Add Category".
 
 body() ->
   [
     "Category name: ",
-    #textbox { id=category_name, html_encode=true },
+    #textbox { id=category_name, html_encode=true, postback=add_category },
     #button { id=update, text="Add", postback=add_category }
   ].
 

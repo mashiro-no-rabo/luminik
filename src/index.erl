@@ -28,14 +28,16 @@ make_posts_list(_PostID, 0) -> [];
 make_posts_list(PostID, N) ->
   case dets:lookup(lb_posts, PostID) of
     [{-1, no_more}] -> [];
-    [{PostID, PostTitle, PostContent, _NewerID, OlderID}] ->
-      [{PostID, PostTime, Category, TagsList}] = dets:lookup(lb_postmeta, PostID),
+    [{PostID, PostTitle, PostRawContent, _NewerID, OlderID}] ->
+      [{PostID, PostPubTime, _PostEditTime, PostCategoryID, PostTagsIDList}] = dets:lookup(lb_postmeta, PostID),
+      {ok, PostContent, _} = regexp:gsub(PostRawContent, "\n", "<br />"),
+      [{PostCategoryID, PostCategory}] = dets:lookup(lb_categories, PostCategoryID),
       [
         #panel { style="border-left: solid #66ffcc 4px; padding-left: 10px;", body=[
           "<h2>",
-          #link { style="margin-top: 0; float: left; color: #000;", text=PostTitle, url="/post/" ++ to_string(PostID) },
+          #link { style="margin-top: 0; float: left; color: #000;", text=PostTitle, url="/post/" ++ luminik:to_string(PostID) },
           "</h2>",
-          #span { style="color: gray; font-size: 12px; float: right; font-family: Menlo, Helvetica, Arial, sans-serif;", text=Category ++ " :: " ++ PostTime },
+          #span { style="color: gray; font-size: 12px; float: right; font-family: Menlo, Helvetica, Arial, sans-serif;", text=PostCategory ++ " :: " ++ PostPubTime },
           #p { style="clear: both", body=PostContent }
         ]}
       ] ++ make_posts_list(OlderID, N-1);
@@ -43,6 +45,3 @@ make_posts_list(PostID, N) ->
       %database_error
       []
   end.
-
-to_string(0) -> [];
-to_string(Int) -> to_string(Int div 10) ++ [48+(Int rem 10)].

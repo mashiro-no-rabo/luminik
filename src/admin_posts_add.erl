@@ -26,15 +26,8 @@ body() ->
     #button { id=submit_post, text="Publish", postback=submit_post },
     #hr {},
     #textarea { id=post_content, style="height: 240px; width: 500px; margin: 20px; float:left; font-size: 14px;" },
-    #dropdown { id=post_category, style="float: left;", value="-1", options=get_categories() }
+    #dropdown { id=post_category, style="float: left;", value="-1", options=luminik:get_categories() }
   ]}.
-
-get_categories() ->
-  AllCategories = dets:match_object(lb_categories, {'_', '_'}),
-  make_category_options(AllCategories).
-make_category_options([]) -> [];
-make_category_options([{CategoryID, Category}|Rest]) ->
-  [ #option { text=Category, value=io_lib:format("~p", [CategoryID]) } | make_category_options(Rest) ].
 
 event(submit_post) ->
   case dets:lookup(lb_settings, newest_post) of
@@ -45,15 +38,14 @@ event(submit_post) ->
     [{newest_post, OldPostID}] ->
       NewPostID = OldPostID + 4
   end,
-  {ok, PostContent, _} = regexp:gsub(wf:q(post_content), "\n", "<br />"),
   % a random NewerPostID ?
-  dets:insert(lb_posts, {NewPostID, wf:q(post_title), PostContent, NewPostID+4, OldPostID}),
+  dets:insert(lb_posts, {NewPostID, wf:q(post_title), wf:q(post_content), NewPostID+4, OldPostID}),
   {{Year, Mouth, Day}, {Hour, Minute, Second}} = calendar:local_time(),
-  PostTime = io_lib:format("~4..0w.~2..0w.~2..0w, ~2..0w:~2..0w:~2..0w", [Year, Mouth, Day, Hour, Minute, Second]),
+  PostPubTime = io_lib:format("~4..0w.~2..0w.~2..0w, ~2..0w:~2..0w:~2..0w", [Year, Mouth, Day, Hour, Minute, Second]),
+  PostEditTime = PostPubTime,
   {PostCategoryID, _} = string:to_integer(wf:q(post_category)),
-  [{PostCategoryID, PostCategory}] = dets:lookup(lb_categories, PostCategoryID),
-  PostTagsList = [],
-  dets:insert(lb_postmeta, {NewPostID, PostTime, PostCategory, PostTagsList}),
+  PostTagsIDList = [],
+  dets:insert(lb_postmeta, {NewPostID, PostPubTime, PostEditTime, PostCategoryID, PostTagsIDList}),
   dets:insert(lb_comments, {NewPostID, []}),
   dets:insert(lb_settings, {newest_post, NewPostID}),
   wf:flash([
