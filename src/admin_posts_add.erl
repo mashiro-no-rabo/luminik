@@ -26,7 +26,7 @@ body() ->
     #button { id=submit_post, text="Publish", postback=submit_post },
     #hr {},
     #textarea { id=post_content, style="height: 240px; width: 500px; margin: 20px; float:left; font-size: 14px;" },
-    #dropdown { id=post_category, style="float: left;", value="-1", options=luminik:get_categories() }
+    #dropdown { id=post_category, style="float: left;", options=luminik:get_categories() }
   ]}.
 
 event(submit_post) ->
