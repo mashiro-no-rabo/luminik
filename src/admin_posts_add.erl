@@ -50,5 +50,5 @@ event(submit_post) ->
   dets:insert(luminik_settings, {newest_post, NewPostID}),
   wf:flash([
     "Post has been published, ",
-    #link { text="click here to view", url="/post/" ++ luminik:to_string(PostID) }
+    #link { text="click here to view", url="/post/" ++ luminik:to_string(NewPostID) }
   ]).
