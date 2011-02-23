@@ -47,6 +47,13 @@ admin_password() ->
 admin_password(AdminPassword) ->
   dets:insert(luminik_settings, {admin_password, AdminPassword}).
 
+to_special_string(Int) when Int < 0 ->
+  RestInt = -Int,
+  "n" ++ to_string2(RestInt div 10) ++ [48+(RestInt rem 10)];
+to_special_string(Int) -> to_string2(Int div 10) ++ [48+(Int rem 10)].
+to_string(Int) when Int < 0 ->
+  RestInt = -Int,
+  "-" ++ to_string2(RestInt div 10) ++ [48+(RestInt rem 10)];
 to_string(Int) -> to_string2(Int div 10) ++ [48+(Int rem 10)].
 to_string2(0) -> [];
 to_string2(Int) -> to_string2(Int div 10) ++ [48+(Int rem 10)].
